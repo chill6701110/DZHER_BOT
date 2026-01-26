@@ -1,6 +1,8 @@
 import express from "express";
 import logger from "../shared/logger.js";
 import router from "../features/chat/presentation.js";
+import pool from "./dataBase/connectPGDB.js";
+import createUserTable from "./dataBase/initBase.js";
 
 const chatRouter = router;
 
@@ -17,6 +19,15 @@ const serverStart = (config) => {
   app.get("/health", (req, res) => {
     res.status(200).json({ status: "OK" });
     logger.info("Привет с /health");
+  });
+
+  createUserTable();
+
+  app.get("/", async (req, res) => {
+    logger.info("Start");
+    const result = await pool.query("SELECT current_database()");
+    logger.info("End");
+    res.send(`The database name is ${result.rows[0].current_database}`);
   });
 
   app.use("/chat", chatRouter);

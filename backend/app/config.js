@@ -29,6 +29,11 @@ const config = {
   port: getRequiredEnv("PORT"),
   gptToken: getRequiredEnv("BEARER_TOKEN"),
   gptUrl: getRequiredEnv("GPT_URL"),
+  dbUser: getRequiredEnv("DB_USER"),
+  dbHost: getRequiredEnv("DB_HOST"),
+  dbName: getRequiredEnv("DB_NAME"),
+  dbPass: getRequiredEnv("DB_PASSWORD"),
+  dbPort: getRequiredEnv("DB_PORT"),
 };
 
 export { getRequiredEnv, getOptinalEnv, config };
