@@ -1,24 +1,24 @@
 import logger from "../../shared/logger.js";
 import express from "express";
 import promtMessage from "./application.js";
-import SendMessageSchema from "../../shared/schemas/chat.js";
+import chatSchema from "../../shared/schemas/chat.js";
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    logger.info("Получен запрос:", {
-      body: req.body,
-    });
+    logger.info("Получен запрос:", req.body);
 
-    const validateBody = SendMessageSchema.parse(req.body);
+    const validateBody = chatSchema.parse(req.body);
     logger.info("Валидация всего письма проведена");
 
-    const data = validateBody.message;
-    logger.info("Текст сообщения получен");
+    const data = {
+      tgid: validateBody.tgid,
+      message: validateBody.message,
+    };
+    logger.info("Текст сообщения и id получен");
 
-    const result = await promtMessage(data);
-    logger.info(result);
+    const result = await promtMessage(data.message);
 
     res.status(200).json(result);
   } catch (error) {

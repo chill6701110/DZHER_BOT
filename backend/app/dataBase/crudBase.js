@@ -18,14 +18,6 @@ export const createUserService = async (tgid) => {
   return result.rows[0];
 };
 
-/*export const updateUserService = async (tgid) => {
-  const result = await pool.query(
-    "UPDATE users SET tgid=$1 WHERE id=$3 RETURNING *",
-    [name, email, id]
-  );
-  return result.rows[0];
-};*/
-
 export const deleteUserService = async (tgid) => {
   const result = await pool.query(
     "DELETE FROM users WHERE tgid = $1 RETURNING *",
@@ -33,3 +25,15 @@ export const deleteUserService = async (tgid) => {
   );
   return result.rows[0];
 };
+
+
+
+
+
+/*export const updateUserService = async (tgid) => {
+  const result = await pool.query(
+    "UPDATE users SET tgid=$1 WHERE id=$3 RETURNING *",
+    [name, email, id]
+  );
+  return result.rows[0];
+};*/

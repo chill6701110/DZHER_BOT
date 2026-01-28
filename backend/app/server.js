@@ -10,12 +10,14 @@ const serverStart = (config) => {
   const app = express();
 
   app.use(express.json());
+
   app.use((err, req, res, next) => {
     if (res.headersSent) {
       return next(err);
     }
     res.status(500).json({ error: err });
   });
+  
   app.get("/health", (req, res) => {
     res.status(200).json({ status: "OK" });
     logger.info("Привет с /health");

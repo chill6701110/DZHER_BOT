@@ -19,7 +19,6 @@ const sendAnswer = async (updatedPromtMessage) => {
   };
   try {
     const { data } = await axios.request(options);
-    logger.info(data);
     return data;
   } catch (error) {
     console.error(error);
