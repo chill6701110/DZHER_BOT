@@ -27,6 +27,9 @@ function getOptinalEnv(name, defaultValue) {
 
 const config = {
   botToken: getRequiredEnv("BOT_TOKEN"),
+  gptToken: getRequiredEnv("BEARER_TOKEN"),
+  gptUrl: getRequiredEnv("GPT_URL"),
+  dbToken: getRequiredEnv("MONGODB_URI"),
 };
 
 export { getRequiredEnv, getOptinalEnv, config };

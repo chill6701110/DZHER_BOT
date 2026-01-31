@@ -1,19 +1,29 @@
 import logger from "../../shared/logger.js";
 import axios from "axios";
+import { config } from "../../app/config.js";
 
-const connectBack = async (data) => {
+const connectGpt = async (message) => {
+  const options = {
+    method: "POST",
+    url: config.gptUrl,
+    headers: {
+      Authorization: `Bearer ${config.gptToken}`,
+      "x-proxy-source": "",
+      "Content-Type": "application/json",
+    },
+    data: {
+      message: message,
+      parent_message_id: "",
+      file_ids: [""],
+      
+    },
+  };
   try {
-    const response = await axios.post("http://localhost:3000/chat", data, {
-      timeout: 10000,
-    });
-    const result = response.data.message;
-    if (result === undefined || result === null || !result)
-      throw new Error("Ошибка в ответе с backend");
-    return result;
+    const { data } = await axios.request(options);
+    return data;
   } catch (error) {
-    logger.error("Ошибка во взаимодействии с backend", error.message);
-    throw error;
+    logger.error(error);
   }
 };
 
-export default connectBack;
+export default connectGpt;
