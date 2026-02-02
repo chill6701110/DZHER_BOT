@@ -1,8 +1,9 @@
 import logger from "../../shared/logger.js";
 import axios from "axios";
 import { config } from "../../app/config.js";
+import { User } from "../../models/user.js";
 
-const connectGpt = async (message) => {
+const connectGpt = async (message, ctx) => {
   const options = {
     method: "POST",
     url: config.gptUrl,
@@ -12,14 +13,22 @@ const connectGpt = async (message) => {
       "Content-Type": "application/json",
     },
     data: {
-      message: message,
-      parent_message_id: "",
-      file_ids: [""],
-      
+      model: "gpt-4 nano",
+      messages: [
+        {
+          role: "user",
+          content: message,
+        },
+      ],
     },
   };
+
   try {
     const { data } = await axios.request(options);
+    const existingUser = await User.findOne({ tgId: ctx.from.id }); //CTX ПОДУМОТЬ ЧО ОН ТУТ ЗАБЫЛ???
+    existingUser.tokenBalance =
+      existingUser.tokenBalance - data.usage.total_tokens;
+    existingUser.save();
     return data;
   } catch (error) {
     logger.error(error);

@@ -4,7 +4,7 @@ import { User } from "../../models/user.js";
 const authUser = async (ctx, next) => {
   if (!ctx.from) {
     logger.warn("Не получена обязательная информация о пользователе");
-    return next();
+    await next();
   }
 
   const { id } = ctx.from;
