@@ -10,16 +10,17 @@ const authUser = async (ctx, next) => {
   const { id } = ctx.from;
 
   try {
-    const existingUser = await User.findOne({ tgId: id });
+    let user = await User.findOne({ tgId: id });
 
-    if (!existingUser) {
-      const newUser = new User({
+    if (!user) {
+      user = new User({
         tgId: id,
       });
-      newUser.save();
+      user.save();
     }
 
-    ctx.user = existingUser;
+    ctx.user = user;
+    console.log(ctx.user);
 
     await next();
   } catch (error) {

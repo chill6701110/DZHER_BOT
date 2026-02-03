@@ -1,4 +1,4 @@
-import { Bot, GrammyError, HttpError, session } from "grammy";
+import { Bot, GrammyError, HttpError, Keyboard, session } from "grammy";
 import { config } from "./config.js";
 import logger from "../shared/logger.js";
 import sendMessage from "../features/chat/presentation.js";
@@ -29,6 +29,8 @@ const freeTime = new InlineKeyboard().text(
   "Начать пробный период",
   "free-time",
 );
+
+
 
 bot.api.setMyCommands([
   {
