@@ -25,7 +25,7 @@ const connectGpt = async (message, id) => {
 
   try {
     const { data } = await axios.request(options);
-    const existingUser = await User.findOne({ tgId: id }); //CTX ПОДУМОТЬ ЧО ОН ТУТ ЗАБЫЛ???
+    const existingUser = await User.findOne({ tgId: id });
     existingUser.tokenBalance =
       existingUser.tokenBalance - data.usage.total_tokens;
     existingUser.save();

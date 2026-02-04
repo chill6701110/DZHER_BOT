@@ -5,9 +5,10 @@ import sendMessage from "../features/chat/presentation.js";
 import { InlineKeyboard } from "grammy";
 import mongoose from "mongoose";
 import authUser from "../features/auth/auth.js";
+import { hydrate } from "@grammyjs/hydrate";
 
 const bot = new Bot(config.botToken);
-
+bot.use(hydrate());
 bot.use(
   session({
     initial: () => ({
@@ -30,7 +31,10 @@ const freeTime = new InlineKeyboard().text(
   "free-time",
 );
 
-
+const payMenu = new InlineKeyboard()
+  .text("Купить - 399 руб", "Pay")
+  .row()
+  .text("<", "back");
 
 bot.api.setMyCommands([
   {
@@ -46,7 +50,7 @@ bot.api.setMyCommands([
 bot.command("start", async (ctx) => {
   ctx.session.statusUi = "menu";
   if (ctx.user.role === "user") {
-    ctx.reply("Привет, я - Дзхер Твой помощник в учебе.", {
+    ctx.reply("Привет, я - Списун. Твой помощник в учебе.", {
       reply_markup: freeTime,
     });
   }
@@ -69,6 +73,21 @@ bot.callbackQuery("button-3", async (ctx) => {
   await ctx.reply(
     "Напиши свое задание, но помни, я пока не умею обрабатывать фото",
   );
+});
+
+bot.callbackQuery("button-2", async (ctx) => {
+  await ctx.callbackQuery.message.editText(
+    "В 25 раз больше запросов 250 - 300 завпросов",
+    {
+      reply_markup: payMenu,
+    },
+  );
+});
+
+bot.callbackQuery("back", async (ctx) => {
+  await ctx.callbackQuery.message.editText("Mеню", {
+    reply_markup: menu,
+  });
 });
 
 bot.callbackQuery("free-time", async (ctx) => {
