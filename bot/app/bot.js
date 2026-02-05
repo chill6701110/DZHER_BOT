@@ -6,9 +6,21 @@ import { InlineKeyboard } from "grammy";
 import mongoose from "mongoose";
 import authUser from "../features/auth/auth.js";
 import { hydrate } from "@grammyjs/hydrate";
+import {
+  payment,
+  telegramSuccessPaymentHandler,
+} from "../features/pay/presentation.js";
 
 const bot = new Bot(config.botToken);
+
+bot.on("pre_checkout_query", (ctx) => {
+  ctx.answerPreCheckoutQuery(true);
+});
+
 bot.use(hydrate());
+
+bot.on(":successful_payment", telegramSuccessPaymentHandler);
+
 bot.use(
   session({
     initial: () => ({
@@ -83,6 +95,8 @@ bot.callbackQuery("button-2", async (ctx) => {
     },
   );
 });
+
+bot.callbackQuery("Pay", payment);
 
 bot.callbackQuery("back", async (ctx) => {
   await ctx.callbackQuery.message.editText("Mеню", {
