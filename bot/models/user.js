@@ -16,6 +16,18 @@ const userSchema = new Schema(
       type: Number,
       default: 5000,
     },
+    countMessages: {
+      type: Number,
+      default: 0,
+    },
+    spentTokens: {
+      type: Number,
+      default: 0,
+    },
+    date: {
+      type: Date,
+      default: new Date(Date.now() + 2592000000),
+    },
   },
   {
     timeStamp: true,

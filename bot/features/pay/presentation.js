@@ -1,8 +1,16 @@
 import logger from "../../shared/logger.js";
 import { User } from "../../models/user.js";
+import { InlineKeyboard } from "grammy";
+
+const afterPay = new InlineKeyboard().text("<", "back");
+const support = new InlineKeyboard().url(
+  "Написать админу",
+  "https://t.me/fOrsiysha",
+);
 
 export const payment = async (ctx) => {
   ctx.session.statusUi = "menu";
+  await ctx.deleteMessage();
   const product = {
     name: "Пакет_1",
     discription: "Чат с учебным ботом",
@@ -50,9 +58,13 @@ export const payment = async (ctx) => {
         provider_data: JSON.stringify(providerInvoiceData),
       },
     );
+
+    ctx.answerCallbackQuery();
   } catch (error) {
     logger.error(`Ошибка при оплате у ${ctx.from.id}`);
-    ctx.reply("Сервис оплаты не работает, напишите админу");
+    ctx.reply("Сервис оплаты не работает, напишите админу", {
+      reply_markup: support,
+    });
     throw new Error("Ошибка в фиче оплаты");
   }
 };
@@ -62,10 +74,16 @@ export const telegramSuccessPaymentHandler = async (ctx) => {
   try {
     const existingUser = await User.findOne({ tgId: ctx.from.id });
     existingUser.tokenBalance = existingUser.tokenBalance + 250000;
+    existingUser.date = new Date();
+    existingUser.date.setDate(existingUser.date.getDate() + 30);
     existingUser.save();
-    ctx.reply("Оплатп прошла успешно, Списун готов решать задачи");
+    ctx.reply("Оплата прошла успешно, Списун готов решать задачи", {
+      reply_markup: afterPay,
+    });
   } catch (error) {
-    logger.error(`Ошибка при добавилении в БД оплаты у ${ctx.from.id}`);
-    ctx.reply("Сервис оплаты не работает, напишите админу");
+    logger.error(`Ошибка при добавилении в БД оплаты у ${ctx.from.id}`, error);
+    ctx.reply("Сервис оплаты не работает, напишите админу", {
+      reply_markup: support,
+    });
   }
 };

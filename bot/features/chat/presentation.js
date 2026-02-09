@@ -2,9 +2,10 @@ import logger from "../../shared/logger.js";
 import validMessage from "./application.js";
 import { InlineKeyboard } from "grammy";
 
-const pay = new InlineKeyboard().text("Оплатить ", "nextPay");
+const pay = new InlineKeyboard().text("Оплатить", "button-2");
 
 const sendMessage = async (ctx) => {
+  console.log(typeof ctx.user.date);
   try {
     if (ctx.user.tokenBalance <= 200)
       return ctx.reply("Уважаемый пользователь, пополни баланс", {

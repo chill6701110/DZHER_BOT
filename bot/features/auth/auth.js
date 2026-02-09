@@ -16,11 +16,14 @@ const authUser = async (ctx, next) => {
       user = new User({
         tgId: id,
       });
+      if (new Date(user.date) > new Date()) {
+        user.tokenBalance = 0;
+      }
+
       user.save();
     }
 
     ctx.user = user;
-    console.log(ctx.user);
 
     await next();
   } catch (error) {

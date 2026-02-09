@@ -28,6 +28,8 @@ const connectGpt = async (message, id) => {
     const existingUser = await User.findOne({ tgId: id });
     existingUser.tokenBalance =
       existingUser.tokenBalance - data.usage.total_tokens;
+    existingUser.countMessages += 1;
+    existingUser.spentTokens += data.usage.total_tokens;
     existingUser.save();
     return data.choices[0].message.content;
   } catch (error) {

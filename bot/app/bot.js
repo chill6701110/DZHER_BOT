@@ -10,6 +10,7 @@ import {
   payment,
   telegramSuccessPaymentHandler,
 } from "../features/pay/presentation.js";
+import { showProfile } from "../features/profile/profile.js";
 
 const bot = new Bot(config.botToken);
 
@@ -34,7 +35,7 @@ bot.use(authUser);
 const menu = new InlineKeyboard()
   .text("Профиль", "button-1")
   .text("Оплатить", "button-2")
-  .text("Тех. поддержка", "button-4")
+  .url("Тех. поддержка", "https://t.me/fOrsiysha")
   .row()
   .text("Решить задание", "button-3");
 
@@ -48,6 +49,7 @@ const payMenu = new InlineKeyboard()
   .row()
   .text("<", "back");
 
+  
 bot.api.setMyCommands([
   {
     command: "start",
@@ -82,9 +84,11 @@ bot.command("menu", async (ctx) => {
 
 bot.callbackQuery("button-3", async (ctx) => {
   ctx.session.statusUi = "chat";
+  await ctx.deleteMessage();
   await ctx.reply(
     "Напиши свое задание, но помни, я пока не умею обрабатывать фото",
   );
+  ctx.answerCallbackQuery();
 });
 
 bot.callbackQuery("button-2", async (ctx) => {
@@ -94,13 +98,22 @@ bot.callbackQuery("button-2", async (ctx) => {
       reply_markup: payMenu,
     },
   );
+  ctx.answerCallbackQuery();
 });
 
 bot.callbackQuery("Pay", payment);
 
+bot.callbackQuery("button-1", showProfile);
+
 bot.callbackQuery("back", async (ctx) => {
   await ctx.callbackQuery.message.editText("Mеню", {
     reply_markup: menu,
+  });
+});
+
+bot.callbackQuery("nextPay", async (ctx) => {
+  await ctx.callbackQuery.message.editText("Тарифы", {
+    reply_markup: payMenu,
   });
 });
 
@@ -109,6 +122,7 @@ bot.callbackQuery("free-time", async (ctx) => {
   await ctx.reply(
     "Напиши свое задание, но помни, я пока не умею обрабатывать фото",
   );
+  ctx.answerCallbackQuery();
 });
 
 bot.on(":voice", async (ctx) => {
