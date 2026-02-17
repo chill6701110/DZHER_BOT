@@ -2,7 +2,7 @@ import logger from "../../shared/logger.js";
 import { User } from "../../models/user.js";
 import { InlineKeyboard } from "grammy";
 
-const afterPay = new InlineKeyboard().text("<", "back");
+const afterPay = new InlineKeyboard().text("", "back");
 const support = new InlineKeyboard().url(
   "Написать админу",
   "https://t.me/fOrsiysha",
@@ -12,7 +12,7 @@ export const payment = async (ctx) => {
   ctx.session.statusUi = "menu";
   await ctx.deleteMessage();
   const product = {
-    name: "Пакет_1",
+    name: "Увеличить количесвто запросов",
     discription: "Чат с учебным ботом",
     id: 1,
     price: 399,
@@ -76,13 +76,14 @@ export const telegramSuccessPaymentHandler = async (ctx) => {
     existingUser.tokenBalance = existingUser.tokenBalance + 250000;
     existingUser.date = new Date();
     existingUser.date.setDate(existingUser.date.getDate() + 30);
+    existingUser.role = "userVip";
     existingUser.save();
-    ctx.reply("Оплата прошла успешно, Списун готов решать задачи", {
+    ctx.reply("✅ Оплата прошла успешно,\n Списун готов решать задачи", {
       reply_markup: afterPay,
     });
   } catch (error) {
     logger.error(`Ошибка при добавилении в БД оплаты у ${ctx.from.id}`, error);
-    ctx.reply("Сервис оплаты не работает, напишите админу", {
+    ctx.reply("🤔 Сервис оплаты не работает, напишите админу", {
       reply_markup: support,
     });
   }

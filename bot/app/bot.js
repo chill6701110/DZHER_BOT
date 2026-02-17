@@ -2,7 +2,6 @@ import { Bot, GrammyError, HttpError, Keyboard, session } from "grammy";
 import { config } from "./config.js";
 import logger from "../shared/logger.js";
 import sendMessage from "../features/chat/presentation.js";
-import { InlineKeyboard } from "grammy";
 import mongoose from "mongoose";
 import authUser from "../features/auth/auth.js";
 import { hydrate } from "@grammyjs/hydrate";
@@ -11,6 +10,14 @@ import {
   telegramSuccessPaymentHandler,
 } from "../features/pay/presentation.js";
 import { showProfile } from "../features/profile/profile.js";
+import { start } from "./commands/start.js";
+import { menuCom } from "./commands/menu.js";
+import { button3, button2 } from "./commands/butt.js";
+import { backCom } from "./commands/back.js";
+import { nextPayCom } from "./commands/nextPayAfterEndTokens.js";
+import { freeTimeCom } from "./commands/freeTime.js";
+import { setCom } from "./commands/setLeftMenu.js";
+
 
 const bot = new Bot(config.botToken);
 
@@ -32,98 +39,25 @@ bot.use(
 
 bot.use(authUser);
 
-const menu = new InlineKeyboard()
-  .text("Профиль", "button-1")
-  .text("Оплатить", "button-2")
-  .url("Тех. поддержка", "https://t.me/fOrsiysha")
-  .row()
-  .text("Решить задание", "button-3");
+bot.api.setMyCommands(setCom);
 
-const freeTime = new InlineKeyboard().text(
-  "Начать пробный период",
-  "free-time",
-);
+bot.command("start", start);
 
-const payMenu = new InlineKeyboard()
-  .text("Купить - 399 руб", "Pay")
-  .row()
-  .text("<", "back");
+bot.command("menu", menuCom);
 
-  
-bot.api.setMyCommands([
-  {
-    command: "start",
-    description: "Запуск бота",
-  },
-  {
-    command: "menu",
-    description: "Главное меню",
-  },
-]);
+bot.callbackQuery("button-3", button3);
 
-bot.command("start", async (ctx) => {
-  ctx.session.statusUi = "menu";
-  if (ctx.user.role === "user") {
-    ctx.reply("Привет, я - Списун. Твой помощник в учебе.", {
-      reply_markup: freeTime,
-    });
-  }
-  if (ctx.user.role === "userVip") {
-    ctx.reply(
-      `Рад тебя снова видеть, ${ctx.from?.first_name}. Продолжим? /menu`,
-    );
-  }
-});
-
-bot.command("menu", async (ctx) => {
-  ctx.session.statusUi = "menu";
-  await ctx.reply("Меню", {
-    reply_markup: menu,
-  });
-});
-
-bot.callbackQuery("button-3", async (ctx) => {
-  ctx.session.statusUi = "chat";
-  await ctx.deleteMessage();
-  await ctx.reply(
-    "Напиши свое задание, но помни, я пока не умею обрабатывать фото",
-  );
-  ctx.answerCallbackQuery();
-});
-
-bot.callbackQuery("button-2", async (ctx) => {
-  await ctx.callbackQuery.message.editText(
-    "В 25 раз больше запросов 250 - 300 завпросов",
-    {
-      reply_markup: payMenu,
-    },
-  );
-  ctx.answerCallbackQuery();
-});
+bot.callbackQuery("button-2", button2);
 
 bot.callbackQuery("Pay", payment);
 
 bot.callbackQuery("button-1", showProfile);
 
-bot.callbackQuery("back", async (ctx) => {
-  await ctx.callbackQuery.message.editText("Mеню", {
-    reply_markup: menu,
-  });
-});
+bot.callbackQuery("back", backCom);
 
-bot.callbackQuery("nextPay", async (ctx) => {
-  await ctx.callbackQuery.message.editText("Тарифы", {
-    reply_markup: payMenu,
-  });
-});
+bot.callbackQuery("nextPay", nextPayCom);
 
-bot.callbackQuery("free-time", async (ctx) => {
-  ctx.session.statusUi = "chat";
-  await ctx.reply(
-    "Напиши свое задание, но помни, я пока не умею обрабатывать фото",
-  );
-  ctx.answerCallbackQuery();
-});
+bot.callbackQuery("free-time", freeTimeCom);
 
 bot.on(":voice", async (ctx) => {
   ctx.session.statusUi = "menu";
@@ -131,8 +65,7 @@ bot.on(":voice", async (ctx) => {
 });
 
 bot.on(":photo", async (ctx) => {
-  ctx.session.statusUi = "menu";
-  await ctx.reply("Извини, я пока не распознаю картинки");
+  await ctx.reply(ctx);
 });
 
 bot.on("message:text", sendMessage);
