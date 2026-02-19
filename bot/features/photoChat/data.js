@@ -3,7 +3,7 @@ import axios from "axios";
 import { config } from "../../app/config.js";
 import { User } from "../../models/user.js";
 
-const connectGpt = async (message, id) => {
+export const getAnswerOnPhoto = async (message, id, url) => {
   const options = {
     method: "POST",
     url: config.gptUrl,
@@ -13,11 +13,14 @@ const connectGpt = async (message, id) => {
       "Content-Type": "application/json",
     },
     data: {
-      model: "gpt-4 nano",
+      model: "gpt-4",
       messages: [
         {
           role: "user",
-          content: message,
+          content: [
+            { type: "text", text: message },
+            { type: "image_url", image_url: { url: url } },
+          ],
         },
       ],
     },
@@ -31,11 +34,10 @@ const connectGpt = async (message, id) => {
     existingUser.countMessages += 1;
     existingUser.spentTokens += data.usage.total_tokens;
     existingUser.save();
+    logger.info(data);
     return data.choices[0].message.content;
   } catch (error) {
-    logger.error(error);
+    logger.error("Ошибка в дата слое photoChat");
     throw error;
   }
 };
-
-export default connectGpt;

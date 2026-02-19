@@ -1,4 +1,4 @@
-import { payMenu } from "../keyboards.js"
+import { payMenu } from "./keyboards.js";
 
 export const nextPayCom = async (ctx) => {
   await ctx.callbackQuery.message.editText("Тарифы", {

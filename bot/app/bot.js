@@ -17,7 +17,7 @@ import { backCom } from "./commands/back.js";
 import { nextPayCom } from "./commands/nextPayAfterEndTokens.js";
 import { freeTimeCom } from "./commands/freeTime.js";
 import { setCom } from "./commands/setLeftMenu.js";
-
+import { getPhotoUrl } from "../features/photoChat/presentation.js";
 
 const bot = new Bot(config.botToken);
 
@@ -64,11 +64,9 @@ bot.on(":voice", async (ctx) => {
   await ctx.reply("Извини, я пока не уменю слушать");
 });
 
-bot.on(":photo", async (ctx) => {
-  await ctx.reply(ctx);
-});
+bot.on("message", getPhotoUrl);
 
-bot.on("message:text", sendMessage);
+// bot.on("message:text", sendMessage);
 
 bot.catch((err) => {
   const ctx = err.ctx;

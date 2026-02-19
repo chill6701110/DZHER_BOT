@@ -1,5 +1,3 @@
-
-
 export const setCom = [
   {
     command: "start",
@@ -9,4 +7,4 @@ export const setCom = [
     command: "menu",
     description: "Главное меню",
   },
-]
+];

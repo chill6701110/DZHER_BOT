@@ -17,7 +17,7 @@ const sendMessage = async (ctx) => {
     const id = ctx.from.id;
 
     const result = await validMessage(message, id);
-    ctx.reply(result, { parse_mode: "Markdown" });
+    ctx.reply(result);
   } catch (error) {
     ctx.reply("Уважаемый пользователь, у нас что-то поломалось, обожди");
     logger.error("Ошибка в хэндлере chat:", error);

@@ -1,4 +1,4 @@
-import { payMenu } from "../keyboards.js";
+import { payMenu } from "./keyboards.js";
 
 export const button3 = async (ctx) => {
   ctx.session.statusUi = "chat";

@@ -1,4 +1,4 @@
-import { freeTime } from "../keyboards.js";
+import { freeTime } from "./keyboards.js";
 
 export const start = async (ctx) => {
   ctx.session.statusUi = "menu";

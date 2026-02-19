@@ -1,4 +1,4 @@
-import { menu } from "../../app/keyboards.js";
+import { menu } from "./keyboards.js";
 
 export const menuCom = async (ctx) => {
   ctx.session.statusUi = "menu";
