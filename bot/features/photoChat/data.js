@@ -18,7 +18,7 @@ export const getAnswerOnPhoto = async (message, id, url) => {
         {
           role: "user",
           content: [
-            { type: "text", text: message },
+            { type: "text", text: `${message}` },
             { type: "image_url", image_url: { url: url } },
           ],
         },
